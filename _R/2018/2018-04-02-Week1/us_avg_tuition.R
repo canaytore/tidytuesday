@@ -9,6 +9,8 @@ library(fiftystater)
 windowsFonts("Lobster" = windowsFont("Lobster"),
              "Montserrat" = windowsFont("Montserrat"))
 
+options(repr.plot.width = 16, repr.plot.height = 9)
+
 # Read the dataset from TidyTuesday Github repository
 tf = tempfile(fileext = ".xlsx")
 curl::curl_download("https://github.com/rfordatascience/tidytuesday/raw/master/data/2018/2018-04-02/us_avg_tuition.xlsx", tf)
@@ -48,6 +50,8 @@ p1 <- ggplot(tuition_byyear, aes(frame = year, map_id = id, group = interaction(
   transition_states(year, transition_length = 1, state_length = 4) +
   ggthemes::theme_fivethirtyeight() +
   theme(
+    plot.margin = grid::unit(c(9,16,9,16), "mm"),
+    aspect.ratio = 9/16,
     text = element_text(family = "Montserrat"),
     legend.position = c('.79', '.92'),
     legend.box.background = element_rect(color = "green4", size = 1),
@@ -72,7 +76,8 @@ tuition_cagr <- tuition %>%
   mutate(id = tolower(State)) %>%
   mutate(cagr = ((`2015-16`/`2004-05`)**(1/11)-1)*100) %>%
   select(id, cagr)
-  
+
+ 
 p2 <- ggplot(tuition_cagr, aes(map_id = id)) +
   geom_map(aes(fill = cagr), color = "azure4", map = fifty_states) +
   expand_limits(x = fifty_states$long, y = fifty_states$lat) +
@@ -84,6 +89,8 @@ p2 <- ggplot(tuition_cagr, aes(map_id = id)) +
   geom_text(x = -68.5, y = 31.5, label = "CAGR (%)", size = 8) +
   ggthemes::theme_fivethirtyeight() +
   theme(
+    plot.margin = grid::unit(c(9,16,9,16), "mm"),
+    aspect.ratio = 9/16,
     text = element_text(family = "Montserrat"),
     legend.position = c('.88', '.2'),
     legend.key.size = unit(1.5, 'cm'),
@@ -95,5 +102,5 @@ p2 <- ggplot(tuition_cagr, aes(map_id = id)) +
   ) +
   scale_fill_continuous(name = "", low = "#f7fcf5", high = "#005a32")
 
-# ggsave("us_tuition_cagr.png", p2, width = 1920, height = 1080, units = "px", dpi = 300, device = "png")
+ggsave("us_tuition_cagr.png", p2, width = 1920, height = 1080, units = "px", dpi = 300, device = "png")
 
